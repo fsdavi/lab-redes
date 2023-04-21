@@ -1,0 +1,216 @@
+node n1 {
+    type router
+    model host
+    network-config {
+	hostname Backup
+	!
+	interface eth0
+	 ip address 192.0.2.10/24
+	 ipv6 address 2001:db8:0::10/64
+	!
+    }
+    canvas c1
+    iconcoords {194.0 99.0}
+    labelcoords {194.0 131.0}
+    interface-peer {eth0 n4}
+}
+
+node n2 {
+    type router
+    model host
+    network-config {
+	hostname WEB
+	!
+	interface eth0
+	 ip address 192.0.2.11/24
+	 ipv6 address 2001:db8:0::11/64
+	!
+    }
+    canvas c1
+    iconcoords {96.0 222.0}
+    labelcoords {96.0 254.0}
+    interface-peer {eth0 n4}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	files=('index.html', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:index.html
+	custom-command index.html
+	config {
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<title> Marketplace </title>
+	</head>
+	<body>
+		<h1> Bem vindo ao maior marketplace de carros da América Latina </h1>
+		<p> Em construção... </p>
+	</body>
+	</html>
+	
+	}
+    }
+    services {DefaultRoute SSH UserDefined}
+}
+
+node n3 {
+    type router
+    model host
+    network-config {
+	hostname Database
+	!
+	interface eth0
+	 ip address 192.0.2.12/24
+	 ipv6 address 2001:db8:0::12/64
+	!
+    }
+    canvas c1
+    iconcoords {195.0 336.0}
+    labelcoords {195.0 368.0}
+    interface-peer {eth0 n4}
+}
+
+node n4 {
+    type lanswitch
+    network-config {
+	hostname Switch Servidores
+	!
+    }
+    canvas c1
+    iconcoords {312.0 218.0}
+    labelcoords {312.0 242.0}
+    interface-peer {e0 n1}
+    interface-peer {e1 n2}
+    interface-peer {e2 n3}
+    interface-peer {e3 n5}
+}
+
+node n5 {
+    type router
+    model router
+    network-config {
+	hostname Roteador
+	!
+	interface eth1
+	 ip address 192.0.3.1/24
+	 ipv6 address 2001:db8:1::1/64
+	!
+	interface eth0
+	 ip address 192.0.2.1/24
+	 ipv6 address 2001:db8:0::1/64
+	!
+    }
+    canvas c1
+    iconcoords {460.0 221.0}
+    labelcoords {460.0 252.0}
+    interface-peer {eth0 n4}
+    interface-peer {eth1 n6}
+}
+
+node n6 {
+    type lanswitch
+    network-config {
+	hostname Switch Operadores
+	!
+    }
+    canvas c1
+    iconcoords {646.0 219.0}
+    labelcoords {646.0 243.0}
+    interface-peer {e0 n5}
+    interface-peer {e1 n7}
+    interface-peer {e2 n8}
+}
+
+node n7 {
+    type router
+    model PC
+    network-config {
+	hostname Operador WEB/Backup
+	!
+	interface eth0
+	 ip address 192.0.3.20/24
+	 ipv6 address 2001:db8:1::20/64
+	!
+    }
+    canvas c1
+    iconcoords {748.0 123.0}
+    labelcoords {748.0 155.0}
+    interface-peer {eth0 n6}
+}
+
+node n8 {
+    type router
+    model PC
+    network-config {
+	hostname Operador Database
+	!
+	interface eth0
+	 ip address 192.0.3.21/24
+	 ipv6 address 2001:db8:1::21/64
+	!
+    }
+    canvas c1
+    iconcoords {746.0 313.0}
+    labelcoords {746.0 345.0}
+    interface-peer {eth0 n6}
+}
+
+link l1 {
+    nodes {n1 n4}
+    bandwidth 0
+}
+
+link l2 {
+    nodes {n2 n4}
+    bandwidth 0
+}
+
+link l3 {
+    nodes {n3 n4}
+    bandwidth 0
+}
+
+link l4 {
+    nodes {n4 n5}
+    bandwidth 0
+}
+
+link l5 {
+    nodes {n5 n6}
+    bandwidth 0
+}
+
+link l6 {
+    nodes {n6 n7}
+    bandwidth 0
+}
+
+link l7 {
+    nodes {n6 n8}
+    bandwidth 0
+}
+
+canvas c1 {
+    name {Canvas1}
+}
+
+option global {
+    interface_names no
+    ip_addresses no
+    ipv6_addresses no
+    node_labels yes
+    link_labels yes
+    show_api no
+    background_images no
+    annotations yes
+    grid yes
+    traffic_start 0
+}
+
+option session {
+}
+
